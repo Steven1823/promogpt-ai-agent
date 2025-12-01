@@ -35,12 +35,16 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <Button size="lg" className="text-lg gap-2 group">
-                Get Started Free
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Button size="lg" className="text-lg gap-2 group" asChild>
+                <Link to="/auth">
+                  Get Started Free
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </Button>
-              <Button size="lg" variant="outline" className="text-lg">
-                Watch Demo
+              <Button size="lg" variant="outline" className="text-lg" asChild>
+                <Link to="/dashboard">
+                  View Demo
+                </Link>
               </Button>
             </div>
           </div>
@@ -103,9 +107,11 @@ const Index = () => {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Join hundreds of SMEs using AI to grow their business
             </p>
-            <Button size="lg" className="text-lg gap-2 group">
-              Start Free Trial
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <Button size="lg" className="text-lg gap-2 group" asChild>
+              <Link to="/auth">
+                Start Free Trial
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
           </div>
         </Card>

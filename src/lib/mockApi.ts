@@ -122,17 +122,25 @@ export const generateContent = async (request: GenerateRequest): Promise<Generat
   // Map Kikuyu to English if needed
   const prompt = kikuyuPhrases[request.prompt.toLowerCase()] || request.prompt;
   
-  // Mock responses based on prompt
+  // Check memory for context
+  const memory = getBusinessMemory();
+  const hasHistory = memory.conversations.length > 0;
+  
+  // Enhanced responses with memory recall
   const mockResponses: Record<string, GenerateResponse> = {
     "What are my top selling products this week?": {
-      text: "Your top products this week are Baby Diapers (89 units, KES 26,700), Baby Wipes (49 units, KES 14,700), and Baby Oil (26 units, KES 7,800). Baby Diapers show the strongest growth with a 15% increase from last week.",
+      text: hasHistory 
+        ? `Looking at your data again, Baby Diapers continue to dominate with 89 units (KES 26,700), followed by Baby Wipes (49 units, KES 14,700), and Baby Oil (26 units, KES 7,800). Baby Diapers show a 15% growth since we last spoke.`
+        : "Your top products this week are Baby Diapers (89 units, KES 26,700), Baby Wipes (49 units, KES 14,700), and Baby Oil (26 units, KES 7,800). Baby Diapers show the strongest growth with a 15% increase from last week.",
       actions: [
         { type: "highlight_chart", payload: { chart: "product_performance" } },
         { type: "save_to_library", payload: { category: "insights" } },
       ],
     },
     "What is selling well?": {
-      text: "Baby Diapers and Baby Wipes are your star products. Diapers lead with 89 units sold this week, generating KES 26,700 in revenue. Wipes follow closely with 49 units.",
+      text: memory.mentionedProducts.includes("Baby Diapers")
+        ? "As I mentioned earlier, Baby Diapers remain your star performer. They're leading with 89 units this week. Baby Wipes are also doing well with 49 units sold."
+        : "Baby Diapers and Baby Wipes are your star products. Diapers lead with 89 units sold this week, generating KES 26,700 in revenue. Wipes follow closely with 49 units.",
       actions: [
         { type: "save_to_library", payload: { category: "insights" } },
       ],
@@ -145,19 +153,32 @@ export const generateContent = async (request: GenerateRequest): Promise<Generat
       ],
     },
     "How are sales?": {
-      text: "Sales are up 12% this week compared to last week. Total revenue is KES 53,700 from 183 units sold. Nairobi and Kisumu are your strongest regions, contributing 65% of total revenue.",
+      text: hasHistory
+        ? "Sales continue their upward trend! You're up 12% this week with KES 53,700 in revenue from 183 units. Your strongest regions remain Nairobi and Kisumu, contributing 65% of total revenue."
+        : "Sales are up 12% this week compared to last week. Total revenue is KES 53,700 from 183 units sold. Nairobi and Kisumu are your strongest regions, contributing 65% of total revenue.",
       actions: [
         { type: "save_to_library", payload: { category: "insights" } },
       ],
     },
   };
   
-  return mockResponses[prompt] || {
-    text: "I understand your question. Based on Sunrise Baby Store's performance, your business is trending positively. Baby Diapers remain your bestseller, and customer retention has improved to 26%. I recommend focusing on your top products and expanding in high-performing regions like Nairobi and Kisumu.",
+  const response = mockResponses[prompt] || {
+    text: hasHistory
+      ? `Based on our previous conversations and your current data, Baby Diapers remain your bestseller with strong performance. Customer retention is at 26%. ${memory.pastRecommendations.length > 0 ? 'Remember, we discussed focusing on high-performing regions like Nairobi and Kisumu.' : 'I recommend focusing on your top products and expanding in high-performing regions.'}`
+      : "I understand your question. Based on Sunrise Baby Store's performance, your business is trending positively. Baby Diapers remain your bestseller, and customer retention has improved to 26%. I recommend focusing on your top products and expanding in high-performing regions like Nairobi and Kisumu.",
     actions: [
       { type: "save_to_library", payload: { category: "insights" } },
     ],
   };
+  
+  // Update memory
+  updateBusinessMemory({
+    conversation: { question: request.prompt, answer: response.text, language: request.language || "english" },
+    product: prompt.toLowerCase().includes("diaper") ? "Baby Diapers" : undefined,
+    insight: response.text.includes("26%") ? "Customer retention at 26%" : undefined,
+  });
+  
+  return response;
 };
 
 // POST /api/ai/tts - Text to Speech
@@ -178,6 +199,57 @@ export const textToSpeech = async (request: TTSRequest): Promise<TTSResponse> =>
   return {
     audioUrl: "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=",
   };
+};
+
+// Business Memory (session-based)
+interface BusinessMemory {
+  conversations: Array<{
+    id: string;
+    question: string;
+    answer: string;
+    timestamp: number;
+    language: string;
+  }>;
+  mentionedProducts: string[];
+  pastRecommendations: string[];
+  keyInsights: string[];
+}
+
+let businessMemory: BusinessMemory = {
+  conversations: [],
+  mentionedProducts: [],
+  pastRecommendations: [],
+  keyInsights: [],
+};
+
+export const updateBusinessMemory = (update: {
+  conversation?: { question: string; answer: string; language: string };
+  product?: string;
+  recommendation?: string;
+  insight?: string;
+}) => {
+  if (update.conversation) {
+    businessMemory.conversations.push({
+      id: `conv-${Date.now()}`,
+      ...update.conversation,
+      timestamp: Date.now(),
+    });
+  }
+  if (update.product && !businessMemory.mentionedProducts.includes(update.product)) {
+    businessMemory.mentionedProducts.push(update.product);
+  }
+  if (update.recommendation) {
+    businessMemory.pastRecommendations.push(update.recommendation);
+  }
+  if (update.insight) {
+    businessMemory.keyInsights.push(update.insight);
+  }
+};
+
+export const getBusinessMemory = () => businessMemory;
+
+export const getConversationHistory = () => {
+  return [...businessMemory.conversations].reverse();
 };
 
 // Library storage (in-memory for demo)

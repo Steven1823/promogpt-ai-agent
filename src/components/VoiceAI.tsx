@@ -102,7 +102,9 @@ const VoiceAI = () => {
         audioUrl: ttsResult.audioUrl,
       });
 
-      toast.success("Response generated and saved to Library");
+      toast.success("Response generated and saved to Intelligence", {
+        description: "View all conversations in the Intelligence dashboard"
+      });
       setIsProcessing(false);
 
       // Auto-play audio (mock)
@@ -128,17 +130,19 @@ const VoiceAI = () => {
       {/* Floating Mic Button */}
       <Button
         onClick={handleVoiceInput}
-        className={`fixed bottom-8 right-8 w-16 h-16 rounded-full shadow-lg z-50 transition-all ${
-          isListening ? "bg-destructive hover:bg-destructive/90" : "bg-primary hover:bg-primary/90"
+        className={`fixed bottom-8 right-8 w-16 h-16 rounded-full shadow-2xl z-50 transition-all animate-glow-pulse ${
+          isListening 
+            ? "bg-destructive hover:bg-destructive/90 shadow-glow-purple" 
+            : "bg-gradient-to-br from-primary to-secondary hover:scale-110 shadow-glow-blue"
         }`}
         size="icon"
       >
-        {isListening ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+        {isListening ? <MicOff className="w-7 h-7" /> : <Mic className="w-7 h-7" />}
       </Button>
 
       {/* Voice AI Panel */}
       {isOpen && (
-        <Card className="fixed bottom-28 right-8 w-96 p-6 shadow-xl z-50 animate-fade-in">
+        <Card className="fixed bottom-28 right-8 w-96 p-6 shadow-2xl z-50 animate-fade-in glass-card glow-border-purple">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-lg flex items-center gap-2">
               🎤 Talk to PromoGPT
@@ -147,7 +151,7 @@ const VoiceAI = () => {
                   <TooltipTrigger asChild>
                     <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
+                  <TooltipContent className="max-w-xs glass-card border-primary/50">
                     <p className="font-semibold mb-1">Example Kikuyu phrases:</p>
                     {kikuyuExamples.map((ex, i) => (
                       <p key={i} className="text-xs">{ex}</p>
@@ -215,20 +219,25 @@ const VoiceAI = () => {
 
             {/* AI Response */}
             {response && (
-              <div className="bg-primary/10 rounded-lg p-3">
+              <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg p-4 border border-primary/20 animate-slide-up">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium">PromoGPT says:</p>
+                  <p className="text-sm font-medium flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                    PromoGPT says:
+                  </p>
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="h-6 w-6 p-0"
+                    className="h-6 w-6 p-0 hover:bg-primary/20"
                     onClick={() => toast.info("🔊 Playing audio...")}
                   >
-                    <Volume2 className="w-4 h-4" />
+                    <Volume2 className="w-4 h-4 text-primary" />
                   </Button>
                 </div>
-                <p className="text-sm text-foreground">{response}</p>
-                <p className="text-xs text-muted-foreground mt-2">💾 Saved to Library</p>
+                <p className="text-sm text-foreground leading-relaxed">{response}</p>
+                <p className="text-xs text-accent mt-2 flex items-center gap-1">
+                  💾 Saved to Intelligence Dashboard
+                </p>
               </div>
             )}
 

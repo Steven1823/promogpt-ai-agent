@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Mic, MicOff, Volume2, X, Languages, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { speechToText, generateContent, textToSpeech, saveToLibrary } from "@/lib/mockApi";
+import { generateContent, textToSpeech, saveToLibrary } from "@/lib/mockApi";
 import { mockBusinessProfile } from "@/lib/mockData";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Select,
   SelectContent,
@@ -29,6 +30,9 @@ const VoiceAI = () => {
   const [language, setLanguage] = useState<string>("auto");
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [liveTranscript, setLiveTranscript] = useState<string>("");
+  
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   const kikuyuExamples = [
     "nĩ kĩĩ kĩrathondeka wega? (What is selling well?)",
@@ -44,22 +48,9 @@ const VoiceAI = () => {
       setLiveTranscript("");
       toast.info("Transcribing...");
 
-      try {
-        // Call STT mock API
-        const sttResult = await speechToText({
-          audioBlob: "mock-audio-blob",
-          languageHint: language !== "auto" ? language : undefined,
-        });
-
-        setTranscript(sttResult.transcript);
-        setIsTranscribing(false);
-        
-        // Auto-confirm and generate response
-        await handleConfirmTranscript(sttResult.transcript);
-      } catch (error) {
-        toast.error("Transcription failed");
-        setIsTranscribing(false);
-        setIsListening(false);
+      // Stop recording
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
       }
     } else {
       // Start listening
@@ -69,19 +60,80 @@ const VoiceAI = () => {
       setResponse("");
       setAudioUrl("");
       setLiveTranscript("");
-      toast.info("Listening... Speak now (English, Swahili, or Kikuyu)");
+      audioChunksRef.current = [];
       
-      // Simulate real-time transcription
-      const words = ["Hello", "I", "want", "to", "check", "my", "sales", "performance"];
-      let currentIndex = 0;
-      const interval = setInterval(() => {
-        if (currentIndex < words.length) {
-          setLiveTranscript(prev => prev + (prev ? " " : "") + words[currentIndex]);
-          currentIndex++;
-        } else {
-          clearInterval(interval);
-        }
-      }, 400);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            sampleRate: 24000,
+            channelCount: 1,
+            echoCancellation: true,
+            noiseSuppression: true,
+          } 
+        });
+        
+        mediaRecorderRef.current = new MediaRecorder(stream, {
+          mimeType: 'audio/webm',
+        });
+
+        mediaRecorderRef.current.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
+        };
+
+        mediaRecorderRef.current.onstop = async () => {
+          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          
+          // Convert blob to base64
+          const reader = new FileReader();
+          reader.readAsDataURL(audioBlob);
+          reader.onloadend = async () => {
+            const base64Audio = reader.result?.toString().split(',')[1];
+            
+            if (!base64Audio) {
+              toast.error("Failed to process audio");
+              setIsTranscribing(false);
+              return;
+            }
+
+            try {
+              console.log('Sending audio to transcription service...');
+              
+              // Call edge function for transcription
+              const { data, error } = await supabase.functions.invoke('speech-to-text', {
+                body: { 
+                  audio: base64Audio,
+                  languageHint: language !== "auto" ? language : undefined,
+                }
+              });
+
+              if (error) throw error;
+
+              console.log('Transcription result:', data);
+              setTranscript(data.transcript);
+              setIsTranscribing(false);
+              
+              // Auto-confirm and generate response
+              await handleConfirmTranscript(data.transcript);
+            } catch (error) {
+              console.error('Transcription error:', error);
+              toast.error("Transcription failed. Please try again.");
+              setIsTranscribing(false);
+            }
+          };
+          
+          // Stop all tracks
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorderRef.current.start();
+        toast.info("🎤 Listening... Speak now");
+      } catch (error) {
+        console.error('Microphone access error:', error);
+        toast.error("Could not access microphone. Please grant permission.");
+        setIsListening(false);
+      }
     }
   };
 

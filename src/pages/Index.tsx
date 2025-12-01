@@ -35,18 +35,28 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <Button size="lg" className="text-lg gap-2 group" asChild>
-                <Link to="/auth">
-                  Get Started Free
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
+              <Button 
+                size="lg" 
+                className="text-lg gap-2 group h-14" 
+                onClick={async () => {
+                  const { mockAuthService } = await import("@/lib/mockAuth");
+                  await mockAuthService.demoLogin();
+                  window.location.href = "/dashboard?demo=true";
+                }}
+              >
+                <Sparkles className="w-5 h-5" />
+                Try Demo Now
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" className="text-lg" asChild>
-                <Link to="/dashboard">
-                  View Demo
+              <Button size="lg" variant="outline" className="text-lg h-14" asChild>
+                <Link to="/auth">
+                  Sign In
                 </Link>
               </Button>
             </div>
+            <p className="text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: "0.4s" }}>
+              No signup required for demo • Full access to all features
+            </p>
           </div>
         </div>
       </section>

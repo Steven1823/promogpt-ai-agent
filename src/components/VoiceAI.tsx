@@ -100,6 +100,7 @@ const VoiceAI = () => {
             try {
               console.log('Sending audio to transcription service...');
               
+              // Call edge function for transcription
               const { data, error } = await supabase.functions.invoke('speech-to-text', {
                 body: { 
                   audio: base64Audio,
@@ -107,21 +108,7 @@ const VoiceAI = () => {
                 }
               });
 
-              if (error) {
-                console.error('Edge function error:', error);
-                
-                // Check for quota error
-                if (error.message?.includes('429') || error.message?.includes('quota')) {
-                  toast.error("OpenAI quota exceeded", {
-                    description: "Please add credits to your OpenAI account at platform.openai.com/settings/organization/billing"
-                  });
-                } else {
-                  toast.error("Transcription failed: " + error.message);
-                }
-                
-                setIsTranscribing(false);
-                return;
-              }
+              if (error) throw error;
 
               console.log('Transcription result:', data);
               setTranscript(data.transcript);

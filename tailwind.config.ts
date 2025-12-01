@@ -57,10 +57,19 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "neon-blue": "hsl(var(--neon-blue))",
+        "electric-purple": "hsl(var(--electric-purple))",
+        "soft-teal": "hsl(var(--soft-teal))",
       },
       backgroundImage: {
         'gradient-hero': 'var(--gradient-hero)',
         'gradient-card': 'var(--gradient-card)',
+        'gradient-glass': 'var(--gradient-glass)',
+      },
+      boxShadow: {
+        'glow-blue': 'var(--glow-blue)',
+        'glow-purple': 'var(--glow-purple)',
+        'glow-teal': 'var(--glow-teal)',
       },
       borderRadius: {
         lg: "var(--radius)",

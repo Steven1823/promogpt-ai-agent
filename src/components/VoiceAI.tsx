@@ -28,6 +28,7 @@ const VoiceAI = () => {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [language, setLanguage] = useState<string>("auto");
   const [audioUrl, setAudioUrl] = useState<string>("");
+  const [liveTranscript, setLiveTranscript] = useState<string>("");
 
   const kikuyuExamples = [
     "nĩ kĩĩ kĩrathondeka wega? (What is selling well?)",
@@ -40,6 +41,7 @@ const VoiceAI = () => {
       // Stop listening and transcribe
       setIsListening(false);
       setIsTranscribing(true);
+      setLiveTranscript("");
       toast.info("Transcribing...");
 
       try {
@@ -66,7 +68,20 @@ const VoiceAI = () => {
       setTranscript("");
       setResponse("");
       setAudioUrl("");
+      setLiveTranscript("");
       toast.info("Listening... Speak now (English, Swahili, or Kikuyu)");
+      
+      // Simulate real-time transcription
+      const words = ["Hello", "I", "want", "to", "check", "my", "sales", "performance"];
+      let currentIndex = 0;
+      const interval = setInterval(() => {
+        if (currentIndex < words.length) {
+          setLiveTranscript(prev => prev + (prev ? " " : "") + words[currentIndex]);
+          currentIndex++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 400);
     }
   };
 
@@ -123,6 +138,7 @@ const VoiceAI = () => {
     setTranscript("");
     setResponse("");
     setAudioUrl("");
+    setLiveTranscript("");
   };
 
   return (
@@ -185,9 +201,33 @@ const VoiceAI = () => {
             {/* Status */}
             <div className="text-center py-4">
               {isListening && (
-                <div className="flex items-center justify-center gap-2 text-destructive">
-                  <div className="w-3 h-3 bg-destructive rounded-full animate-pulse" />
-                  <span className="font-medium">Listening...</span>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-center gap-2 text-destructive">
+                    <div className="w-3 h-3 bg-destructive rounded-full animate-pulse" />
+                    <span className="font-medium">Listening...</span>
+                  </div>
+                  
+                  {/* Waveform Animation */}
+                  <div className="flex items-center justify-center gap-1 h-16">
+                    {[...Array(12)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1 bg-gradient-to-t from-neon-blue to-electric-purple rounded-full animate-waveform"
+                        style={{
+                          animationDelay: `${i * 0.1}s`,
+                          height: '100%',
+                        }}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Live Transcription Preview */}
+                  {liveTranscript && (
+                    <div className="bg-surface-dark/50 rounded-lg p-3 border border-neon-blue/30 animate-fade-in">
+                      <p className="text-sm text-muted-foreground mb-1">Live transcription:</p>
+                      <p className="text-sm text-foreground font-medium">{liveTranscript}</p>
+                    </div>
+                  )}
                 </div>
               )}
               {isTranscribing && (

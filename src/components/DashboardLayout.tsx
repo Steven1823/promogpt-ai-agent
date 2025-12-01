@@ -29,12 +29,18 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const navItems = [
     { to: "/dashboard", icon: LayoutDashboard, label: "Overview" },
-    { to: "/dashboard/insights", icon: BarChart3, label: "AI Insights" },
+    { to: "/dashboard/insights", icon: BarChart3, label: "Sales Intelligence" },
+    { to: "/dashboard/product-insights", icon: TrendingUp, label: "Product Insights" },
     { to: "/dashboard/upload", icon: Upload, label: "Upload Data" },
     { to: "/dashboard/content", icon: Sparkles, label: "Content Studio" },
+    { to: "/dashboard/visual-creator", icon: Sparkles, label: "Visual Creator" },
+    { to: "/dashboard/carousel-maker", icon: Sparkles, label: "Carousel Maker" },
+    { to: "/dashboard/video-ads", icon: Sparkles, label: "Video Ads" },
     { to: "/dashboard/campaigns", icon: Megaphone, label: "Campaigns" },
-    { to: "/dashboard/publish", icon: Send, label: "Publish" },
+    { to: "/dashboard/automation", icon: Sparkles, label: "Automation" },
+    { to: "/dashboard/publish", icon: Send, label: "Scheduler" },
     { to: "/dashboard/performance", icon: TrendingUp, label: "Performance" },
+    { to: "/dashboard/library", icon: BarChart3, label: "Library" },
     { to: "/dashboard/settings", icon: Settings, label: "Settings" },
   ];
 

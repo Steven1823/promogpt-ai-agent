@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Sparkles, BarChart3, Zap, TrendingUp, Target, Users } from "lucide-react";
+import { ArrowRight, Sparkles, BarChart3, Zap, TrendingUp, Target, Users, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.png";
 
@@ -37,25 +37,33 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
               <Button 
                 size="lg" 
-                className="text-lg gap-2 group h-14" 
+                className="text-lg gap-3 group h-16 px-8" 
                 onClick={async () => {
                   const { mockAuthService } = await import("@/lib/mockAuth");
-                  await mockAuthService.demoLogin();
-                  window.location.href = "/dashboard?demo=true";
+                  await mockAuthService.startDemo();
+                  window.location.href = "/dashboard";
                 }}
               >
-                <Sparkles className="w-5 h-5" />
-                Try Demo Now
+                <Sparkles className="w-6 h-6" />
+                Start Demo
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" className="text-lg h-14" asChild>
-                <Link to="/auth">
-                  Sign In
-                </Link>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg h-16 px-8" 
+                onClick={async () => {
+                  const { mockAuthService } = await import("@/lib/mockAuth");
+                  await mockAuthService.continueAsGuest();
+                  window.location.href = "/dashboard";
+                }}
+              >
+                <Eye className="w-5 h-5 mr-2" />
+                Continue as Guest
               </Button>
             </div>
             <p className="text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: "0.4s" }}>
-              No signup required for demo • Full access to all features
+              Zero setup • Instant access • No passwords required
             </p>
           </div>
         </div>

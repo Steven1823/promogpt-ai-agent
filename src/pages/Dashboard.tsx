@@ -95,35 +95,35 @@ const Dashboard = () => {
               <p className="text-sm font-medium">{mockInsights.forecast}</p>
             </div>
           </div>
-          <Button onClick={() => navigate("/dashboard/insights")}>
-            View Full Insights
+          <Button onClick={() => navigate("/dashboard/intelligence")}>
+            View Full Intelligence
           </Button>
         </Card>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/upload")}>
-            <h3 className="font-semibold mb-2">📊 Upload New Data</h3>
+          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/data-hub")}>
+            <h3 className="font-semibold mb-2">📊 Data Hub</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Import your latest sales data to get fresh insights
+              Upload CSV or connect your e-commerce store
             </p>
-            <Button variant="outline" className="w-full">Upload CSV</Button>
+            <Button variant="outline" className="w-full">Manage Data</Button>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/content")}>
-            <h3 className="font-semibold mb-2">✨ Generate Content</h3>
+          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/content-campaign")}>
+            <h3 className="font-semibold mb-2">✨ Content & Campaign</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Create social posts, ads, and campaigns with AI
+              Generate captions, scripts, and full campaigns
             </p>
             <Button variant="outline" className="w-full">Create Content</Button>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/campaigns")}>
-            <h3 className="font-semibold mb-2">🚀 Launch Campaign</h3>
+          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/ad-generator")}>
+            <h3 className="font-semibold mb-2">🎬 Ad Generator</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Build and schedule multi-channel campaigns
+              Create video ads with AI voice-overs
             </p>
-            <Button variant="outline" className="w-full">Build Campaign</Button>
+            <Button variant="outline" className="w-full">Generate Ads</Button>
           </Card>
         </div>
       </div>

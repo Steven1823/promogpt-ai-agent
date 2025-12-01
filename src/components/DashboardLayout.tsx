@@ -6,7 +6,6 @@ import {
   Sparkles, 
   Megaphone, 
   Send, 
-  TrendingUp,
   Settings,
   LogOut
 } from "lucide-react";
@@ -14,6 +13,7 @@ import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import VoiceAI from "@/components/VoiceAI";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -29,18 +29,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const navItems = [
     { to: "/dashboard", icon: LayoutDashboard, label: "Overview" },
-    { to: "/dashboard/insights", icon: BarChart3, label: "Sales Intelligence" },
-    { to: "/dashboard/product-insights", icon: TrendingUp, label: "Product Insights" },
-    { to: "/dashboard/upload", icon: Upload, label: "Upload Data" },
-    { to: "/dashboard/content", icon: Sparkles, label: "Content Studio" },
-    { to: "/dashboard/visual-creator", icon: Sparkles, label: "Visual Creator" },
-    { to: "/dashboard/carousel-maker", icon: Sparkles, label: "Carousel Maker" },
-    { to: "/dashboard/video-ads", icon: Sparkles, label: "Video Ads" },
-    { to: "/dashboard/campaigns", icon: Megaphone, label: "Campaigns" },
-    { to: "/dashboard/automation", icon: Sparkles, label: "Automation" },
-    { to: "/dashboard/publish", icon: Send, label: "Scheduler" },
-    { to: "/dashboard/performance", icon: TrendingUp, label: "Performance" },
-    { to: "/dashboard/library", icon: BarChart3, label: "Library" },
+    { to: "/dashboard/data-hub", icon: Upload, label: "Data Hub" },
+    { to: "/dashboard/intelligence", icon: BarChart3, label: "Intelligence" },
+    { to: "/dashboard/content-campaign", icon: Sparkles, label: "Content & Campaign" },
+    { to: "/dashboard/automation", icon: Send, label: "Automation" },
+    { to: "/dashboard/ad-generator", icon: Megaphone, label: "Ad Generator" },
     { to: "/dashboard/settings", icon: Settings, label: "Settings" },
   ];
 
@@ -86,6 +79,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <main className="flex-1 overflow-auto">
         {children}
       </main>
+
+      {/* Voice AI */}
+      <VoiceAI />
     </div>
   );
 };

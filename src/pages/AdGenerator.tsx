@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sparkles, Video, Mic } from "lucide-react";
 import { toast } from "sonner";
 
-const VideoAds = () => {
+const AdGenerator = () => {
   const [generating, setGenerating] = useState(false);
   const [generated, setGenerated] = useState(false);
   const [script, setScript] = useState("Introducing Sunrise Baby Store - your trusted home for quality baby essentials. From diapers to oils, we've got everything your little one needs. Shop comfort, shop love!");
@@ -26,8 +26,8 @@ const VideoAds = () => {
     <DashboardLayout>
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">AI Voice & Video Ads</h1>
-          <p className="text-muted-foreground">Generate professional video ads with AI voiceovers</p>
+          <h1 className="text-3xl font-bold mb-2">AI Ad Generator</h1>
+          <p className="text-muted-foreground">Create video ads with AI scripts, voice-overs, and visuals</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -146,4 +146,4 @@ const VideoAds = () => {
   );
 };
 
-export default VideoAds;
+export default AdGenerator;

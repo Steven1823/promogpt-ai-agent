@@ -122,10 +122,14 @@ const VoiceAI = () => {
       });
       setIsProcessing(false);
 
-      // Auto-play audio (mock)
-      setTimeout(() => {
+      // Auto-play audio
+      if (ttsResult.audioUrl && !ttsResult.audioUrl.includes("mock-audio-url")) {
+        const audio = new Audio(ttsResult.audioUrl);
+        audio.play().catch(err => console.error("Audio playback failed:", err));
         toast.info("🔊 Playing voice response");
-      }, 500);
+      } else {
+        toast.info("🔊 Voice response generated (audio playback not available in demo)");
+      }
     } catch (error) {
       toast.error("Failed to generate response");
       setIsProcessing(false);

@@ -1,158 +1,250 @@
 # PromoGPT - AI Marketing Intelligence Platform
 
-Transform your business data into marketing magic with AI-powered insights, content generation, and campaign automation for SMEs.
+Transform your business data into marketing magic with AI-powered insights, content generation, and campaign automation built for African SMEs.
 
-## 🚀 Super Simple Access (Zero Setup)
+## 🚀 Overview
 
-### Just 2 Buttons - No Passwords, No Forms
+PromoGPT is an all-in-one AI marketing platform that combines business intelligence, content creation, and campaign automation. Upload your sales data, get instant insights, generate professional marketing content, and automate your campaigns—all powered by conversational AI.
 
-**Option 1: Start Demo** (Recommended)
-- Click "Start Demo" on landing page or /auth
+**Core Value Proposition:** Giving African SMEs a superpower—the intelligence to grow, the content to scale, and the automation to compete globally.
+
+## ✨ Key Features
+
+### 🎤 Voice AI Assistant
+- **Conversational Interface**: Ask questions about your business using your voice
+- **Multilingual Support**: English, Swahili, and Kikuyu
+- **Real-time Transcription**: Powered by OpenAI Whisper
+- **Natural Voice Responses**: Powered by Eleven Labs TTS
+- **Business Memory**: AI remembers your previous questions and context
+
+### 📊 Business Intelligence
+- **Data-Driven Insights**: Upload CSV sales data and get instant analysis
+- **Smart Forecasting**: Revenue predictions and trend analysis
+- **Product Performance**: Top sellers, stock alerts, pricing suggestions
+- **Regional Analysis**: Geographic performance breakdowns
+
+### 🎨 Content & Campaign Studio
+- **AI Content Generation**: Social posts, ads, emails, blogs, video scripts
+- **Visual Creator**: Branded posters, flyers, infographics
+- **Carousel Maker**: Auto-generate Instagram carousels
+- **Video Ads**: Script-to-video with AI voiceovers
+
+### 🤖 Marketing Automation
+- **Campaign Planning**: Full campaigns with timeline and budget
+- **Workflow Automation**: If-then marketing rules
+- **Multi-Platform Publishing**: Instagram, TikTok, Facebook scheduling
+- **Performance Tracking**: Analytics and optimization
+
+## 🎯 Access Options
+
+### Option 1: Start Demo (Recommended)
+- Click "Start Demo" on landing page
 - Instant full access with all features
-- Pre-loaded Sunrise Baby Store data
-- All 14 dashboards ready to explore
+- Pre-loaded with Sunrise Baby Store mock data
+- Perfect for exploring all capabilities
 
-**Option 2: Continue as Guest**
+### Option 2: Continue as Guest
 - Read-only access to all dashboards
-- Perfect for quick preview
+- Quick preview without any commitment
 - No data persistence
 
-## 🎯 Complete Dashboard System (14 Modules)
+**Zero friction**: No passwords, no signup forms, no configuration needed.
 
-### Business Intelligence
-1. **Home Overview** - Business summary, quick insights, AI suggestions
-2. **Sales Intelligence** - Revenue charts, forecasting, trends analysis
-3. **Customer Intelligence** - Segments, loyalty scores, churn prediction (Coming Soon)
-4. **Product Insights** - Stock alerts, pricing suggestions, upsell opportunities
+## 📱 Core Dashboards
 
-### Content & Marketing
-5. **Marketing Insights** - Campaign ROI, best content, competitor analysis (Coming Soon)
-6. **AI Content Studio** - Generate posts, ads, emails, blogs, scripts
-7. **Visual Creator** - Posters, flyers, infographics with your brand
-8. **Carousel Maker** - Auto-generate Instagram carousels from insights
-9. **AI Voice & Video Ads** - Script-to-video with AI voiceovers
+1. **Home/Overview** - Business summary and quick insights
+2. **Data Hub** - Upload and manage business data (CSV)
+3. **Intelligence** - AI-powered analytics and forecasting
+4. **Content & Campaign** - Generate marketing content and campaigns
+5. **Automation** - Build and manage workflow automations
+6. **Ad Generator** - Create AI-powered video and voice ads
+7. **Settings** - Business profile, brand voice, integrations
 
-### Campaign & Automation
-10. **Campaign Planner** - Full campaign plans with timeline and budget
-11. **Automation Workflows** - If-then marketing automation rules
-12. **Scheduler & Posting** - Multi-platform publishing and scheduling
+## 🛠️ Technology Stack
 
-### Library & Settings
-13. **Library** - Store all generated content with tags and filters
-14. **Settings** - Business profile, brand voice, colors, integrations
+### Frontend
+- **React 18** + TypeScript
+- **Vite** for fast development
+- **Tailwind CSS** + shadcn-ui components
+- **Recharts** for data visualization
+- **React Router** for navigation
 
-## ✨ Demo Features
+### Backend (Lovable Cloud)
+- **Supabase** for database and authentication
+- **Edge Functions** for serverless logic
+- **Real-time** data synchronization
 
-All buttons are fully functional with mock data:
-- ✓ Generate AI content instantly
-- ✓ Create campaigns with calendars
-- ✓ Upload CSV data (demo mode)
-- ✓ Publish to social platforms (mocked)
-- ✓ View performance analytics
-- ✓ Build automation workflows
+### AI Integrations
+- **OpenAI Whisper** - Speech-to-text transcription
+- **Eleven Labs** - Text-to-speech voice generation
+- **AI Models** - Content generation and analysis
 
-## 🎨 Mock Business Data
+## 🚀 Quick Start
 
-**Pre-loaded Business: Sunrise Baby Store**
-- Industry: Baby Products
-- Products: Diapers, wipes, oils, shampoos
-- Regions: Nairobi, Kisumu, Mombasa
-- Mock sales data, customer lists, insights
+### For Development
 
-## 🛠️ Tech Stack
+1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd promogpt
+```
 
-- **Frontend:** React + TypeScript + Vite
-- **UI:** Tailwind CSS + shadcn-ui
-- **Charts:** Recharts
-- **Routing:** React Router
-- **Demo Mode:** localStorage sessions
+2. **Install dependencies**
+```bash
+npm install
+```
 
-## 📱 Quick Start Guide
+3. **Set up environment variables**
+Create a `.env` file with:
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_key
+VITE_SUPABASE_PROJECT_ID=your_project_id
+```
 
-1. Visit the landing page
+4. **Configure API keys (for Voice AI)**
+- `OPENAI_API_KEY` - For Whisper speech-to-text
+- `ELEVENLABS_API_KEY` - For text-to-speech voice generation
+
+5. **Run development server**
+```bash
+npm run dev
+```
+
+### For Demo/Presentation
+
+1. Visit the deployed app
 2. Click **"Start Demo"**
-3. Explore all 14 dashboards
-4. Try generating content, campaigns, visuals
-5. Check automation workflows
-6. View performance analytics
+3. Explore all dashboards with pre-loaded data
+4. Try voice commands with the floating microphone button
+5. Generate content, create campaigns, test automation
 
-That's it! No signup, no passwords, no configuration.
+## 🎨 Mock Business Profile
 
-## 🎓 For Presentation/Demo
+**Pre-loaded Demo Business: Sunrise Baby Store**
+- **Industry**: Baby Products
+- **Products**: Diapers, wipes, baby oils, shampoos
+- **Regions**: Nairobi, Kisumu, Mombasa
+- **Brand Colors**: Pink (#FFB6C1), Gold (#FFD700)
+- **Brand Voice**: Friendly, educational, warm
 
-### Key Demo Flow
+All dashboards populate with realistic mock data based on this profile.
+
+## 🎓 Demo Flow for Presentations
+
 1. **Landing Page** → Click "Start Demo"
-2. **Dashboard** → Show business overview
-3. **Sales Intelligence** → Display charts and forecasts
-4. **Content Studio** → Generate social posts
-5. **Carousel Maker** → Create Instagram carousel
-6. **Video Ads** → Generate video with AI voice
-7. **Campaign Planner** → Show full campaign
+2. **Home** → Show business overview and AI suggestions
+3. **Intelligence** → Display sales charts and forecasts
+4. **Voice AI** → Ask "What are my top products?" using voice
+5. **Content Studio** → Generate social media posts
+6. **Ad Generator** → Create video with AI voice
+7. **Campaign** → Show full campaign plan with calendar
 8. **Automation** → Demonstrate workflow triggers
-9. **Publish** → Mock social media posting
-
-### Highlight These Features
-- Zero-friction login (just 1 click)
-- 14 comprehensive dashboards
-- AI content generation across formats
-- Visual content creation with branding
-- Campaign planning and automation
-- Multi-platform publishing
-- Performance tracking
-
-## 🔒 Production Security Notes
-
-**Current Demo:**
-- In-memory sessions for presentation reliability
-- Mock data and functions
-- No external dependencies
-- Instant access for judges/demos
-
-**Future Production:**
-- Secure OAuth 2.0 (Google, Facebook)
-- Password hashing (bcrypt/argon2)
-- Server-side session management
-- Real database integration
-- Rate limiting & CSRF protection
-- API authentication tokens
-
-## 📄 Project Info
-
-- **Built with:** Lovable (AI-powered web app builder)
-- **Project URL:** https://lovable.dev/projects/d728d28d-7cba-4f3c-b623-c779e33d5446
-- **Documentation:** https://docs.lovable.dev/
+9. **Data Hub** → Upload CSV (mock processing)
 
 ## 🌍 Target Market
 
 **Primary Users:**
 - African SMEs (44M+ businesses)
-- Small shops & online sellers
-- Restaurants & cafes
-- Fashion & beauty brands
-- Digital creators
+- Small retail shops and online sellers
+- Restaurants and cafes
+- Fashion and beauty brands
+- Digital creators and influencers
 
-**Use Cases:**
-- Turn sales data into strategy
-- Generate marketing content in seconds
-- Automate repetitive marketing tasks
-- Create professional visuals without designers
-- Plan and execute multi-channel campaigns
+**Key Problems Solved:**
+1. Lack of business intelligence (70% track sales manually)
+2. Inconsistent marketing strategy (guesswork vs data-driven)
+3. Slow/expensive content creation (no design/video skills)
+4. Time-consuming manual tasks (no automation)
 
 ## 💡 Key Differentiators
 
-1. **All-in-One Platform** - Not just content, but full business intelligence
-2. **Zero Technical Skill Required** - Built for non-technical SME owners
-3. **African Market Focus** - Supports local platforms and use cases
-4. **Mock Data for Demos** - Fully functional without backend setup
-5. **Instant ROI** - See results in first session
+1. **All-in-One Platform** - Business intelligence + content + automation in one place
+2. **Voice-First Interface** - Conversational AI in local languages
+3. **Zero Technical Skills Required** - Built for non-technical SME owners
+4. **African Market Focus** - Supports local languages and platforms
+5. **Instant ROI** - See results in first session with demo mode
 
-## 🤝 Support
+## 🔒 Security & Production
 
-For questions or feedback:
-- Visit our documentation
-- Join our community
-- Contact the PromoGPT team
+**Current Demo Mode:**
+- In-memory sessions for instant access
+- Mock data and API responses
+- No external dependencies required
+- Perfect for presentations and demos
+
+**Production Considerations:**
+- Secure authentication with Lovable Cloud
+- Real-time data synchronization with Supabase
+- API rate limiting and security policies
+- Encrypted storage of API keys and secrets
+
+## 📦 Project Structure
+
+```
+promogpt/
+├── src/
+│   ├── components/       # Reusable UI components
+│   │   ├── ui/          # shadcn-ui components
+│   │   ├── VoiceAI.tsx  # Voice assistant component
+│   │   └── ...
+│   ├── pages/           # Main dashboard pages
+│   ├── lib/             # Utilities and mock data
+│   │   ├── mockData.ts  # Mock business data
+│   │   ├── mockAuth.ts  # Demo authentication
+│   │   └── mockApi.ts   # Mock API endpoints
+│   ├── integrations/    # Supabase integration
+│   └── hooks/           # Custom React hooks
+├── supabase/
+│   └── functions/       # Edge functions
+│       └── speech-to-text/  # Whisper integration
+└── public/              # Static assets
+```
+
+## 🔧 Configuration
+
+### Voice AI Setup
+The Voice AI requires two API keys configured as secrets:
+
+1. **OpenAI API Key** - For Whisper speech-to-text
+   - Get from: https://platform.openai.com/api-keys
+   - Configure in project secrets as `OPENAI_API_KEY`
+
+2. **Eleven Labs API Key** - For text-to-speech
+   - Get from: https://elevenlabs.io/
+   - Configure in project secrets as `ELEVENLABS_API_KEY`
+
+### Supported Languages
+- **English** - Full support
+- **Swahili** - Voice input and text responses
+- **Kikuyu** - Voice input mapped to English responses
+
+## 📚 Documentation
+
+- **Lovable Docs**: https://docs.lovable.dev/
+- **Project URL**: https://lovable.dev/projects/d728d28d-7cba-4f3c-b623-c779e33d5446
+- **Supabase Docs**: https://supabase.com/docs
+
+## 🤝 Contributing
+
+This is a demo/MVP project built with Lovable. For questions or contributions:
+1. Review the existing codebase structure
+2. Follow the established patterns (mock-first development)
+3. Maintain the dark theme design system
+4. Test with demo mode before production changes
+
+## 📄 License
+
+Built with ❤️ for African SMEs • Powered by AI • Zero Friction Access
+
+## 🆘 Support
+
+For issues or questions:
+- Check the demo mode functionality first
+- Review console logs for errors
+- Verify API keys are configured correctly
+- Test with mock data before connecting real data
 
 ---
 
-**Built with ❤️ for African SMEs** • Powered by AI • Zero Friction Access
+**Built with Lovable** - AI-powered web app builder

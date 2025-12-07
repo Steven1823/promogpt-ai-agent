@@ -305,43 +305,33 @@ export interface TTSResponse {
 
 export const textToSpeech = async (request: TTSRequest): Promise<TTSResponse> => {
   try {
-    const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
+    const { supabase } = await import('@/integrations/supabase/client');
     
-    if (!ELEVENLABS_API_KEY) {
-      console.warn("Eleven Labs API key not found, using mock audio");
-      return { audioUrl: "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" };
-    }
-
-    // Use Aria voice by default (9BWtsMINqrJLrRacOk9x) - female, warm, professional
-    const voiceId = request.voiceId || "9BWtsMINqrJLrRacOk9x";
-    
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'audio/mpeg',
-        'xi-api-key': ELEVENLABS_API_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const { data, error } = await supabase.functions.invoke('text-to-speech', {
+      body: {
         text: request.text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: {
-          stability: 0.5,
-          similarity_boost: 0.75,
-          style: 0.0,
-          use_speaker_boost: true,
-        }
-      })
+        voiceId: request.voiceId,
+        language: request.language,
+      }
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Eleven Labs API error: ${response.status}`, errorText);
-      throw new Error(`Eleven Labs API error: ${response.status}`);
+    if (error) {
+      console.error("TTS edge function error:", error);
+      throw error;
     }
 
-    // Convert audio to blob and create object URL
-    const audioBlob = await response.blob();
+    if (data.error) {
+      console.error("TTS error:", data.error);
+      throw new Error(data.error);
+    }
+
+    // Convert base64 audio to blob URL
+    const binaryString = atob(data.audioBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const audioBlob = new Blob([bytes], { type: data.contentType || 'audio/mpeg' });
     const audioUrl = URL.createObjectURL(audioBlob);
     
     return { audioUrl };

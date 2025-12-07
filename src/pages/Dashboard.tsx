@@ -1,22 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, TrendingUp, Users, ShoppingCart, DollarSign, Sparkles } from "lucide-react";
-import { getMockDashboard, type MockDashboardData } from "@/lib/mockApi";
-import { useNavigate } from "react-router-dom";
+import { RotateCcw, FileSpreadsheet, Database } from "lucide-react";
 import { toast } from "sonner";
+import { getSession, resetToDemo, isGuestMode, SessionData } from "@/lib/sessionStore";
+import { getMockDashboard } from "@/lib/apiStubs";
+import UploadCSVCard from "@/components/home/UploadCSVCard";
+import AskPromoGPTCard from "@/components/home/AskPromoGPTCard";
+import MarketingHubCard from "@/components/home/MarketingHubCard";
+import ConversationPanel from "@/components/home/ConversationPanel";
+import LatestInsightBanner from "@/components/home/LatestInsightBanner";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const [dashboardData, setDashboardData] = useState<MockDashboardData | null>(null);
+  const [session, setSession] = useState<SessionData>(getSession());
   const [isLoading, setIsLoading] = useState(true);
+  const guest = isGuestMode();
+
+  const refreshSession = useCallback(() => {
+    setSession(getSession());
+  }, []);
 
   useEffect(() => {
     const loadDashboard = async () => {
       try {
-        const { dashboard } = await getMockDashboard();
-        setDashboardData(dashboard);
+        await getMockDashboard();
+        refreshSession();
         setIsLoading(false);
       } catch (error) {
         toast.error("Failed to load dashboard");
@@ -24,9 +32,39 @@ const Dashboard = () => {
       }
     };
     loadDashboard();
-  }, []);
 
-  if (isLoading || !dashboardData) {
+    // Keyboard shortcut: Ctrl+D for demo reset
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "d") {
+        e.preventDefault();
+        handleReset();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [refreshSession]);
+
+  const handleReset = () => {
+    resetToDemo();
+    refreshSession();
+    toast.success("Reset to demo data", {
+      description: "Sunrise Baby Store sample data loaded",
+    });
+  };
+
+  const handleUploadComplete = () => {
+    refreshSession();
+  };
+
+  const handleAIResponse = (question: string, answer: string) => {
+    refreshSession();
+  };
+
+  const handleContentGenerated = () => {
+    refreshSession();
+  };
+
+  if (isLoading) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-full">
@@ -39,135 +77,122 @@ const Dashboard = () => {
     );
   }
 
-  const stats = [
-    { 
-      label: "Total Revenue", 
-      value: `KES ${dashboardData.home.kpis.revenue.toLocaleString()}`, 
-      change: `+${dashboardData.home.kpis.growth}%`,
-      icon: DollarSign,
-      trend: "up"
-    },
-    { 
-      label: "Total Orders", 
-      value: dashboardData.home.kpis.orders.toString(), 
-      change: "+18%",
-      icon: ShoppingCart,
-      trend: "up"
-    },
-    { 
-      label: "Avg Order Value", 
-      value: `KES ${Math.round(dashboardData.home.kpis.revenue / dashboardData.home.kpis.orders)}`, 
-      change: "+5%",
-      icon: TrendingUp,
-      trend: "up"
-    },
-    { 
-      label: "Customer Retention", 
-      value: `26%`, 
-      change: "+6%",
-      icon: Users,
-      trend: "up"
-    },
-  ];
-
   return (
     <DashboardLayout>
-      <div className="p-8">
+      <div className="p-6 md:p-8 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back! 👋</h1>
-          <p className="text-muted-foreground">
-            Here's what's happening with {dashboardData.settings.businessName} today
-          </p>
-        </div>
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold mb-1">
+              {session.businessProfile.businessName}
+            </h1>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              {session.isUsingDemoData ? (
+                <span className="flex items-center gap-1.5">
+                  <Database className="w-4 h-4" />
+                  Demo Data
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5">
+                  <FileSpreadsheet className="w-4 h-4" />
+                  {session.lastUploadFilename} ({session.currentData.length} rows)
+                </span>
+              )}
+              {guest && (
+                <span className="text-xs bg-muted px-2 py-0.5 rounded">
+                  Guest Mode
+                </span>
+              )}
+            </div>
+          </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat) => (
-            <Card key={stat.label} className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <stat.icon className="w-6 h-6 text-primary" />
-                </div>
-                <div className="flex items-center gap-1 text-sm text-green-600 font-medium">
-                  <ArrowUpRight className="w-4 h-4" />
-                  {stat.change}
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
-              <p className="text-2xl font-bold">{stat.value}</p>
-            </Card>
-          ))}
-        </div>
-
-        {/* AI Insights Summary */}
-        <Card className="p-6 mb-8 bg-gradient-card">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-primary" />
-              AI Business Intelligence
-            </h2>
-            <Button onClick={() => toast.success("Generating fresh insights...")}>
-              <Sparkles className="w-4 h-4 mr-2" />
-              Refresh
+          {!session.isUsingDemoData && (
+            <Button
+              id="reset-demo-btn"
+              variant="outline"
+              onClick={handleReset}
+              className="gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Reset to Demo Data
             </Button>
-          </div>
-          <p className="text-muted-foreground mb-4">{dashboardData.home.aiSummary}</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">Top Products</p>
-              <div className="space-y-1">
-                {dashboardData.home.topProducts.map((product) => (
-                  <div key={product.name} className="text-sm font-medium">
-                    • {product.name} ({product.units} units)
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">Top Regions</p>
-              <div className="space-y-1">
-                {dashboardData.intelligence.topRegions.map((region) => (
-                  <div key={region} className="text-sm font-medium">• {region}</div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">30-Day Forecast</p>
-              <p className="text-sm font-medium">{dashboardData.intelligence.forecast}</p>
-            </div>
-          </div>
-          <Button onClick={() => navigate("/dashboard/intelligence")}>
-            View Full Intelligence
-          </Button>
-        </Card>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/data-hub")}>
-            <h3 className="font-semibold mb-2">📊 Data Hub</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Upload CSV or connect your e-commerce store
-            </p>
-            <Button variant="outline" className="w-full">Manage Data</Button>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/content-campaign")}>
-            <h3 className="font-semibold mb-2">✨ Content & Campaign</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Generate captions, scripts, and full campaigns
-            </p>
-            <Button variant="outline" className="w-full">Create Content</Button>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/dashboard/ad-generator")}>
-            <h3 className="font-semibold mb-2">🎬 Ad Generator</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Create video ads with AI voice-overs
-            </p>
-            <Button variant="outline" className="w-full">Generate Ads</Button>
-          </Card>
+          )}
         </div>
+
+        {/* Main Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <UploadCSVCard onUploadComplete={handleUploadComplete} />
+
+          <AskPromoGPTCard
+            onResponse={handleAIResponse}
+            usageCount={session.usageCounters.aiQueries}
+            maxUsage={session.limits.maxAiQueries}
+          />
+
+          <MarketingHubCard
+            generatedContent={session.generatedContent}
+            onContentGenerated={handleContentGenerated}
+            usageCount={session.usageCounters.contentGenerations}
+            maxUsage={session.limits.maxContentGenerations}
+          />
+        </div>
+
+        {/* Latest Insight */}
+        <div className="mb-8">
+          <LatestInsightBanner insight={session.latestInsight} />
+        </div>
+
+        {/* Conversations Panel */}
+        {session.conversations.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ConversationPanel conversations={session.conversations} />
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/30">
+                <p className="text-xs text-muted-foreground mb-1">Total Revenue</p>
+                <p className="text-xl font-bold">
+                  KES{" "}
+                  {session.currentData
+                    .reduce((sum, row) => sum + row.revenue, 0)
+                    .toLocaleString()}
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/30">
+                <p className="text-xs text-muted-foreground mb-1">Total Units</p>
+                <p className="text-xl font-bold">
+                  {session.currentData
+                    .reduce((sum, row) => sum + row.units, 0)
+                    .toLocaleString()}
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/30">
+                <p className="text-xs text-muted-foreground mb-1">AI Queries</p>
+                <p className="text-xl font-bold">
+                  {session.usageCounters.aiQueries}/{session.limits.maxAiQueries}
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/30">
+                <p className="text-xs text-muted-foreground mb-1">Content Generated</p>
+                <p className="text-xl font-bold">
+                  {session.usageCounters.contentGenerations}/{session.limits.maxContentGenerations}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Guest Mode Banner */}
+        {guest && (
+          <div className="mt-8 p-4 rounded-xl bg-muted/20 border border-border/30 text-center">
+            <p className="text-sm text-muted-foreground">
+              Guest mode — scheduling and publishing features are disabled.{" "}
+              <button className="text-primary hover:underline">
+                Upgrade to unlock
+              </button>
+            </p>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
